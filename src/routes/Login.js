@@ -3,89 +3,137 @@ import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Loader, Message, Input } from 'semantic-ui-react';
+import { Loader, Message, Input, Popup } from 'semantic-ui-react';
 
 import Button from '../components/buttons/Button';
 
-export default observer(
-	class Login extends Component {
-		constructor(props) {
-			super(props);
+class Login extends Component {
+	constructor(props) {
+		super(props);
 
-			extendObservable(this, {
-				email: '',
-				password: '',
-			});
+		extendObservable(this, {
+			email: '',
+      password: '',
+      errors: {
+        email: '',
+        password: '',
+      },
+		});
+	}
+
+	handleChange = (event) => {
+		this[event.target.name] = event.target.value;
+	};
+
+	handleSubmit = async () => {
+		const { email, password } = this;
+    const response = await this.props.mutate({
+      variables: { email, password },
+    });
+    this.handleClear()
+    console.log('response', response)
+    const { ok, refreshToken, token, errors } = response.data.login;
+    if (ok) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
+      this.props.history.push('/home');
+    } else {
+      const errs = {};
+      errors.forEach(err => (errs[`${err.path}`] = err.message));
+      //debugger
+      this.errors = {
+        ...errs
+      };
+    }
+	};
+
+	handleClear = () => {
+		this.email = '';
+    this.password = '';
+    this.errors = {
+      password: '',
+      email: '',
+    }
+	};
+
+	render() {
+		const { email, password, errors } = this;
+		return (
+  <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '30vw',
+        alignItems: 'center',
+      }}
+    >
+      <h1 style={{ margin: 0 }}>Login</h1>
+      <form onSubmit={event => event.preventDefault()}>
+        <Popup
+          inverted
+          trigger={
+            <Input
+              onChange={this.handleChange}
+              value={email}
+              name="email"
+              error={!!errors.email}
+              size="huge"
+              action={{ icon: 'mail outline', size: 'huge' }}
+              actionPosition="left"
+              placeholder="Email..."
+              style={{ padding: '15px 0', width: '100%' }}
+            />
+          }
+          content={errors.email}
+          open={!!errors.email}
+          position='right center'
+        />
+        <Popup
+          inverted
+          trigger={
+            <Input
+              onChange={this.handleChange}
+              value={password}
+              name="password"
+              error={!!errors.password}
+              type="password"
+              size="huge"
+              action={{ icon: 'lock', size: 'huge' }}
+              actionPosition="left"
+              placeholder="Password..."
+              style={{ padding: '15px 0', width: '100%' }}
+            />
+          }
+          content={errors.password}
+          open={!!errors.password}
+          position='right center'
+        />
+        <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
+          <Button onClick={this.handleClear}>Clear</Button>
+          <Button primary onClick={this.handleSubmit}>
+            Submit
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+		);
+	}
+}
+
+const loginMutation = gql`
+	mutation($email: String!, $password: String!) {
+		login(email: $email, password: $password) {
+			ok
+			token
+			refreshToken
+			errors {
+				path
+				message
+			}
 		}
+	}
+`;
 
-		handleChange = event => {
-			this[event.target.name] = event.target.value;
-		};
-
-		handleSubmit = () => {
-			console.log(this.email, this.password);
-		};
-
-		handleClear = () => {
-			this.email = '';
-			this.password = '';
-		};
-
-		render() {
-			const { email, password } = this;
-			return (
-				<div style={{ display: 'flex', justifyContent: 'center' }}>
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							width: '30vw',
-							alignItems: 'center',
-						}}
-					>
-						<h1 style={{ margin: 0 }}>Login</h1>
-						<Input
-							onChange={this.handleChange}
-							value={email}
-							name="email"
-							//error={!!errors.email}
-							size="huge"
-							action={{ icon: 'mail outline', size: 'huge' }}
-							actionPosition="left"
-							placeholder="Email..."
-							style={{ padding: '15px 0', width: '100%' }}
-						/>
-						{/* {errors.email ? (
-          <Message negative>
-            <p>{errors.email}</p>
-          </Message>
-        ) : null} */}
-						<Input
-							onChange={this.handleChange}
-							value={password}
-							name="password"
-							//error={!!errors.password}
-							type="password"
-							size="huge"
-							action={{ icon: 'lock', size: 'huge' }}
-							actionPosition="left"
-							placeholder="Password..."
-							style={{ padding: '15px 0', width: '100%' }}
-						/>
-						{/* {errors.password ? (
-          <Message negative>
-            <p>{errors.password}</p>
-          </Message>
-        ) : null} */}
-						<div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
-							<Button onClick={this.handleClear}>Clear</Button>
-							<Button primary onClick={this.handleSubmit}>
-								Submit
-							</Button>
-						</div>
-					</div>
-				</div>
-			);
-		}
-	},
-);
+export default graphql(loginMutation)(observer(Login));

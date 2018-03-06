@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const Home = ({ data: { loading, allUsers } }) =>
-  (loading ? null : allUsers.map(user => <h1 key={user.id}>{user.email}</h1>));
+	(loading ? null : allUsers.map(user => <h1 key={user.id}>{user.email}</h1>));
 
 const allUsersQuery = gql`
 	{
