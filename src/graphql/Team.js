@@ -1,10 +1,21 @@
+/*eslint-disable */
 import gql from 'graphql-tag';
 
 export const allTeamsQuery = gql`
 	{
 		allTeams {
-			name
 			id
+			name
+			owner
+			channels {
+				id
+				name
+			}
+		}
+		inviteTeams {
+			id
+			name
+			owner
 			channels {
 				id
 				name

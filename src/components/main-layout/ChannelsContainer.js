@@ -68,7 +68,7 @@ const InvitePeopleLink = styled.a`
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 export default ({
- userName, teamName, channels, users, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal
+ userName, teamName, channels, users, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, ownerId, isOwner
 }) => (
   <ChannelContainer>
     <div>
@@ -81,7 +81,7 @@ export default ({
     <div>
       <SideBarUl>
         <SideBarLi header>
-					Channels <Icon name="add circle" onClick={handleCreateChannelModal} />
+					Channels {isOwner ? <Icon name="add circle" onClick={handleCreateChannelModal}/> : null } 
         </SideBarLi>
         {channels.map(channel => (
           <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}><SideBarLi focus={currentChannelId === channel.id ? true : false} key={channel.id}>{`# ${channel.name}`}</SideBarLi></Link>
@@ -103,7 +103,7 @@ export default ({
       </SideBarUl>
     </div>
     <div style={{ display: 'flex' }}>
-      <InvitePeopleLink href='#invite-people' onClick={handleInvitePeopleModal}>+ Invite People</InvitePeopleLink>
+      {isOwner ? <InvitePeopleLink href='#invite-people' onClick={handleInvitePeopleModal}>+ Invite People</InvitePeopleLink> : null }
     </div>
   </ChannelContainer>
 );

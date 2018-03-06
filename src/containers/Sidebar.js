@@ -122,10 +122,12 @@ class Sidebar extends Component {
 		const { showModal, inviteModal, errors } = this.state;
 
 		let userName = '';
+		let isOwner = false;
 		try {
 			const token = localStorage.getItem('token');
 			const { user } = jwtDecode(token);
 			userName = user.username;
+			isOwner = user.id === team.owner;
 		} catch (err) {
 			/* eslint-disable-next-line no-console */
 			console.log(err);
@@ -156,6 +158,7 @@ class Sidebar extends Component {
     currentChannelId={currentChannelId}
     teamName={team.name}
     teamId={team.id}
+    isOwner={isOwner}
     userName={userName}
     channels={team.channels}
     users={[{ id: 1, name: 'arkell' }, { id: 2, name: 'cdaz' }]}
