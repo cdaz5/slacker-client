@@ -12,7 +12,7 @@ const Message = styled.div`
 export default ({ message }) => (
   <Message>
     <div>
-      <img src="https://png.icons8.com/ios/50/000000/guest-female.png" />
+      <img src="https://png.icons8.com/ios/50/000000/anonymous-mask.png" />
     </div>
     <div>
       <div style={{ display: 'flex' }}>
