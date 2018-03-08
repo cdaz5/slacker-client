@@ -1,17 +1,17 @@
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
 import { Redirect } from 'react-router-dom';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import MainContainer from '../components/main-layout/MainContainer';
 import { meQuery } from '../graphql/Team';
 import Header from '../components/main-layout/Header';
-import MessagesContainer from '../components/main-layout/MessagesContainer';
+import DirectMessageContainer from '../containers/DirectMessageContainer';
 import TextContainer from '../components/main-layout/TextContainer';
 import Sidebar from '../containers/Sidebar';
 
-const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, channelId } } }) => {
+const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, userId } } }) => {
 	if (loading) {
 		return null;
 	}
@@ -26,17 +26,9 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
 	const teamIdx = teamIdInteger ? findIndex(teams, ['id', teamIdInteger]) : 0;
 	const currentTeam = teamIdx === -1 ? teams[0] : teams[teamIdx];
 
-	const channelIdInteger = parseInt(channelId, 10);
-	const channelIdx = channelIdInteger
-		? findIndex(currentTeam.channels, ['id', channelIdInteger])
-		: 0;
-	const currentChannel =
-		channelIdx === -1 ? currentTeam.channels[0] : currentTeam.channels[channelIdx];
 	return (
   <MainContainer>
     <Sidebar
-      currentChannelId={currentChannel.id}
-      currentTeamId={teamId}
       teams={teams.map(team => ({
 					id: team.id,
 					letter: team.name.charAt(0).toUpperCase(),
@@ -44,28 +36,32 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
       team={currentTeam}
       userName={username}
     />
-    {currentChannel && [
-      <Header key="channel-header" channelName={currentChannel.name} />,
-      <MessagesContainer key="channel-messages" channelId={currentChannel.id} />,
-      <TextContainer
-        key="channel-messages"
-        onSubmit={async (text) => {
-						await mutate({ variables: { channelId: currentChannel.id, text } });
-					}}
-        placeholder={currentChannel.name}
-      />,
-			]}
+    <Header channelName="a username" />
+    <DirectMessageContainer teamId={teamId} userId={userId} />
+    <TextContainer
+      onSubmit={async (text) => {
+					const response = await mutate({
+						variables: {
+							text,
+							receiverId: userId,
+							teamId,
+						},
+					});
+					console.log(response);
+				}}
+      placeholder={userId}
+    />
   </MainContainer>
 	);
 };
 
-const createMessageMutation = gql`
-	mutation($channelId: Int!, $text: String!) {
-		createMessage(channelId: $channelId, text: $text)
+const createDirectMessageMutation = gql`
+	mutation($receiverId: Int!, $text: String!, $teamId: Int!) {
+		createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId)
 	}
 `;
 // export default ViewTeam;
 export default compose(
+	graphql(createDirectMessageMutation),
 	graphql(meQuery, { options: { fetchPolicy: 'network-only' } }),
-	graphql(createMessageMutation),
 )(ViewTeam);

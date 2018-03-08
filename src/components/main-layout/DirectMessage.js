@@ -20,7 +20,7 @@ export default ({ message }) => (
     <div>
       <div style={{ display: 'flex' }}>
         <Comment.Author style={{ paddingRight: '5px' }}>
-          {message.user.username}
+          {message.sender.username}
         </Comment.Author>
         <Comment.Metadata>{message.created_at}</Comment.Metadata>
       </div>

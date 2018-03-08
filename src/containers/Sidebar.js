@@ -8,12 +8,15 @@ import TeamsContainer from '../components/main-layout/TeamsContainer';
 import ChannelsContainer from '../components/main-layout/ChannelsContainer';
 import CreateChannelModal from '../components/modals/CreateChannelModal';
 import InvitePeopleModal from '../components/modals/InvitePeopleModal';
-import { allTeamsQuery } from '../graphql/Team';
+import DirectMessageModal from '../components/modals/DirectMessageModal';
+import { meQuery } from '../graphql/Team';
+import DirectMessage from '../components/main-layout/DirectMessage';
 
 class Sidebar extends Component {
 	state = {
 		showModal: false,
-		inviteModal: false,
+    inviteModal: false,
+    dmModal: false,
 		channelName: '',
 		public: true,
 		email: '',
@@ -97,10 +100,10 @@ class Sidebar extends Component {
 				if (!ok) {
 					return;
 				}
-				const data = store.readQuery({ query: allTeamsQuery });
-				const teamIdx = findIndex(data.allTeams, ['id', teamId]);
-				data.allTeams[teamIdx].channels.push(channel);
-				store.writeQuery({ query: allTeamsQuery, data });
+				const data = store.readQuery({ query: meQuery });
+				const teamIdx = findIndex(data.me.teams, ['id', teamId]);
+				data.me.teams[teamIdx].channels.push(channel);
+				store.writeQuery({ query: meQuery, data });
 			},
 		});
 		this.handleCreateChannelModal();
@@ -115,24 +118,38 @@ class Sidebar extends Component {
 		return this.setState({
 			[event.target.name]: event.target.value,
 		});
-	};
+  };
+  
+  handleDirectMessageModal = () => {
+    this.setState(prevState => ({
+			dmModal: !prevState.dmModal,
+		}));
+  }
 
+  handleDirectMessageSubmit = () => {
+    console.log('submit')
+  }
+
+  handleDirectMessageChange = () => {
+    console.log('change')
+  }
+  
 	render() {
-		const { teams, team, currentChannelId } = this.props;
-		const { showModal, inviteModal, errors } = this.state;
+		const {
+ teams, team, currentChannelId, userName,
+} = this.props;
+		const { showModal, inviteModal, errors, dmModal } = this.state;
 
-		let userName = '';
-		let isOwner = false;
-		try {
-			const token = localStorage.getItem('token');
-			const { user } = jwtDecode(token);
-			userName = user.username;
-			isOwner = user.id === team.owner;
-		} catch (err) {
-			/* eslint-disable-next-line no-console */
-			console.log(err);
-		}
 		return [
+  <DirectMessageModal
+    key="direct-message-modal"
+    isOpen={dmModal}
+    handleDirectMessageModal={this.handleDirectMessageModal}
+    handleDirectMessageChange={this.handleDirectMessageChange}
+    handleDirectMessageSubmit={this.handleDirectMessageSubmit}
+    teamId={team.id}
+    values={this.state}
+  />,
   <CreateChannelModal
     key="create-channel-modal"
     isOpen={showModal}
@@ -158,12 +175,13 @@ class Sidebar extends Component {
     currentChannelId={currentChannelId}
     teamName={team.name}
     teamId={team.id}
-    isOwner={isOwner}
+    isOwner={team.admin}
     userName={userName}
     channels={team.channels}
     users={[{ id: 1, name: 'arkell' }, { id: 2, name: 'cdaz' }]}
     handleCreateChannelModal={this.handleCreateChannelModal}
     handleInvitePeopleModal={this.handleInvitePeopleModal}
+    handleDirectMessageModal={this.handleDirectMessageModal}
   />,
 		];
 	}

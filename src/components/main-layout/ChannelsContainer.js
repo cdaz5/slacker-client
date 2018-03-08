@@ -68,7 +68,7 @@ const InvitePeopleLink = styled.a`
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 export default ({
- userName, teamName, channels, users, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, ownerId, isOwner
+ userName, teamName, channels, users, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, isOwner, handleDirectMessageModal,
 }) => (
   <ChannelContainer>
     <div>
@@ -90,7 +90,7 @@ export default ({
     </div>
     <div>
       <SideBarUl>
-        <SideBarLi header>Direct Messages</SideBarLi>
+        <SideBarLi header>Direct Messages <Icon name="add circle" onClick={handleDirectMessageModal} /></SideBarLi>
         <SideBarLi key="slackbot">
           {/* eslint-disable-next-line */}
 					<Bubble /> {` slackbot`}

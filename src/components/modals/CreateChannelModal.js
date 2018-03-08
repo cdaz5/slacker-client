@@ -9,7 +9,7 @@ const CreateChannelModal = ({
 	handleCreateChannelChange,
 	handleCreateChannelSubmit,
   values,
-  teamId
+  teamId,
 }) => (
   <Modal open={isOpen}>
     <Modal.Header>Select a Photo</Modal.Header>
