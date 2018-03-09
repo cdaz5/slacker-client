@@ -96,9 +96,11 @@ export default ({
 					<Bubble /> {` slackbot`}
         </SideBarLi>
         {users.map(user => (
-          <SideBarLi key={user.id}>
-            <Bubble /> {` ${user.name}`}
-          </SideBarLi>
+          <Link key={user.id} to={`/view-team/user/${teamId}/${user.id}`}>
+            <SideBarLi>
+              <Bubble /> {` ${user.username}`}
+            </SideBarLi>
+          </Link>
 				))}
       </SideBarUl>
     </div>

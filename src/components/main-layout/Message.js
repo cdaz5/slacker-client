@@ -9,9 +9,15 @@ const Message = styled.div`
 	color: #000;
 `;
 
-export default ({ message }) => (
+const Avatar = styled.div`
+	align-self: ${props => (!props.gif ? 'flex-start' : 'center')};
+`;
+
+export default ({ message }) => {
+	const pattern = new RegExp(/jpg|gif|png|gph/gi);
+	return (
   <Message>
-    <div>
+    <div style={{ alignSelf: 'flex-start' }}>
       <img
         alt="placeholder-avatar"
         src="https://png.icons8.com/ios/50/000000/anonymous-mask.png"
@@ -24,7 +30,21 @@ export default ({ message }) => (
         </Comment.Author>
         <Comment.Metadata>{message.created_at}</Comment.Metadata>
       </div>
-      <Comment.Text>{message.text}</Comment.Text>
+      <Comment.Text>
+        {pattern.test(message.text) ? (
+          <span style={{ display: 'flex', flexDirection: 'column' }}>
+            <a href={message.text} target="_blank">
+              {message.text}
+            </a>
+            <span>
+              <img style={{ maxHeight: '272px' }} alt={message.id} src={message.text} />
+            </span>
+          </span>
+					) : (
+						message.text
+					)}
+      </Comment.Text>
     </div>
   </Message>
-);
+	);
+};

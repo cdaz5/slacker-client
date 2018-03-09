@@ -36,13 +36,12 @@ class Login extends Component {
     if (ok) {
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
-      this.props.history.push('/home');
+      this.props.history.push('/view-team');
     } else {
       const errs = {};
       errors.forEach(err => (errs[`${err.path}`] = err.message));
-      //debugger
       this.errors = {
-        ...errs
+        ...errs,
       };
     }
 	};

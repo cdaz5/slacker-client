@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 
 import Message from './Message';
 import MessagesList from './MessagesList';
+import Uploader from './FileUpload';
 
 const MessageContainer = styled.div`
 	grid-column: 3;
@@ -74,9 +75,11 @@ class MessagesContainer extends Component {
 		}
 		return (
   <MessageContainer>
-    <MessagesList>
-      {messages.map(message => <Message key={message.id} message={message} />)}
-    </MessagesList>
+    <Uploader disableClick>
+      <MessagesList>
+        {messages.map(message => <Message key={message.id} message={message} />)}
+      </MessagesList>
+    </Uploader>
   </MessageContainer>
 		);
 	}

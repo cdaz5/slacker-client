@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Icon } from 'semantic-ui-react';
 
 const TeamsContainer = styled.div`
 	grid-column: 1;
@@ -44,6 +45,11 @@ export default ({ teams }) => (
           <Teamsli>{team.letter}</Teamsli>
         </Link>
 			))}
+      <Link key="add-team" to="/create-team">
+        <Teamsli>
+          <Icon name="add" style={{ height: '19px', margin: '0px' }} />
+        </Teamsli>
+      </Link>
     </TeamsUl>
   </TeamsContainer>
 );

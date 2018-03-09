@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, Popup, Input, Checkbox } from 'semantic-ui-react';
+import { Modal, Popup, Input, Checkbox, Label } from 'semantic-ui-react';
 
+import MultiSelect from '../../utils/MultiSelect';
 import Button from '../buttons/Button';
 
 const CreateChannelModal = ({
@@ -39,13 +40,25 @@ const CreateChannelModal = ({
           trigger={
             <Checkbox
               onChange={(event, data) => handleCreateChannelChange(event, data)}
-              checked={values.public}
+              checked={!values.public}
               name="public"
-              label="is this channel public?"
+              label="is this channel private?"
 							// error={!!errors.email}
               style={{ padding: '15px 0', width: '100%' }}
             />
 					}
+					// content={errors.email}
+					// open={!!errors.email}
+          position="right center"
+        />
+        <Popup
+          inverted
+          trigger={
+            <MultiSelect
+              teamId={teamId}
+              placeholder='Search by name'
+            />
+          }
 					// content={errors.email}
 					// open={!!errors.email}
           position="right center"

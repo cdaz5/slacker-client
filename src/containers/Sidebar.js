@@ -32,7 +32,21 @@ class Sidebar extends Component {
 				email: '',
 			},
 		});
-	};
+  };
+  
+  handleClearForm = () => {
+    this.setState({
+      showModal: false,
+      inviteModal: false,
+      dmModal: false,
+      channelName: '',
+      public: true,
+      email: '',
+      errors: {
+        email: '',
+      },
+    });
+  }
 
 	handleCreateChannelModal = () => {
 		this.setState(prevState => ({
@@ -41,6 +55,7 @@ class Sidebar extends Component {
 	};
 
 	handleInvitePeopleModal = () => {
+    this.handleClearErrors();
 		this.setState(prevState => ({
 			inviteModal: !prevState.inviteModal,
 		}));
@@ -59,22 +74,34 @@ class Sidebar extends Component {
 				email,
 				teamId,
 			},
-		});
+    });
+    this.handleClearErrors();
 		console.log(response);
 		const { ok, errors } = response.data.addTeamMember;
 		if (ok) {
 			this.handleInvitePeopleModal();
 		} else if (!ok) {
 			const errs = {};
-			errors.forEach(err => (errs[`${err.path}`] = err.message));
-			return this.setState({
-				...this.state,
-				errors: {
-					...this.state.errors,
-					...errs,
-				},
-			});
-		}
+      errors.forEach(err => (errs[`${err.path}`] = err.message));
+      if (errs['user_id'] === 'user_id must be unique') {
+        return this.setState({
+          ...this.state,
+          email: '',
+          errors: {
+            email: 'Member is already a part of team',
+          },
+        });
+      }
+      return this.setState({
+        ...this.state,
+        email: '',
+        errors: {
+          ...this.state.errors,
+          ...errs,
+        },
+      });
+    }
+    this.handleClearForm();
 	};
 
 	handleCreateChannelSubmit = async (teamId) => {
@@ -106,7 +133,8 @@ class Sidebar extends Component {
 				store.writeQuery({ query: meQuery, data });
 			},
 		});
-		this.handleCreateChannelModal();
+    this.handleCreateChannelModal();
+    this.handleClearForm();
 	};
 
 	handleCreateChannelChange = (event, data) => {
@@ -164,6 +192,7 @@ class Sidebar extends Component {
     key="invite-people-modal"
     isOpen={inviteModal}
     teamId={team.id}
+    teamName={team.name}
     values={this.state}
     handleInvitePeopleModal={this.handleInvitePeopleModal}
     handleInvitePeopleSubmit={this.handleInvitePeopleSubmit}
@@ -178,7 +207,7 @@ class Sidebar extends Component {
     isOwner={team.admin}
     userName={userName}
     channels={team.channels}
-    users={[{ id: 1, name: 'arkell' }, { id: 2, name: 'cdaz' }]}
+    users={team.directMessageMembers}
     handleCreateChannelModal={this.handleCreateChannelModal}
     handleInvitePeopleModal={this.handleInvitePeopleModal}
     handleDirectMessageModal={this.handleDirectMessageModal}

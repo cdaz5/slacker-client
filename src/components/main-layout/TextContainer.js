@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { withFormik } from 'formik';
-import Input from '../inputs/Input';
+// import Input from '../inputs/Input';
+import { Icon, Input, Label } from 'semantic-ui-react';
+import Uploader from './FileUpload';
 
 const TextContainer = styled.div`
 	grid-column: 3;
 	grid-row: 3;
 	color: #fff;
-	padding: 1em;
+	padding: 0.5em;
 	text-align: center;
 `;
 
@@ -21,6 +23,13 @@ const Messaging = ({
 }) => (
   <TextContainer>
     <Input
+      style={{
+				width: '100%',
+				border: '2px solid #707273',
+				borderRadius: '6px',
+			}}
+      action
+      labelPosition="left"
       onKeyDown={(event) => {
 				if (event.keyCode === 13 && !isSubmitting) {
 					handleSubmit(event);
@@ -31,7 +40,24 @@ const Messaging = ({
       placeholder={`Message #${placeholder}`}
       onChange={handleChange}
       onBlur={handleBlur}
-    />
+    >
+      <Label
+        style={{
+					backgroundColor: 'transparent',
+					borderRight: '2px solid #707273',
+				}}
+      >
+        <Uploader>
+          <Icon
+            onClick={() => console.log('click')}
+            name="add"
+            size="large"
+            style={{ margin: '0px' }}
+          />
+        </Uploader>
+      </Label>
+      <input style={{ backgroundColor: 'transparent' }} />
+    </Input>
   </TextContainer>
 );
 

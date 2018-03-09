@@ -62,7 +62,7 @@ class Register extends Component {
 		console.log(response);
 		const { ok, errors } = response.data.register;
 		if (ok) {
-			this.props.history.push('/home');
+			this.props.history.push('/login');
 		} else {
 			const errs = {};
 			errors.forEach(err => (errs[`${err.path}`] = err.message));

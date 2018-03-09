@@ -32,6 +32,8 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
 		: 0;
 	const currentChannel =
 		channelIdx === -1 ? currentTeam.channels[0] : currentTeam.channels[channelIdx];
+
+	console.log(currentTeam.directMessageMembers);
 	return (
   <MainContainer>
     <Sidebar
@@ -46,7 +48,7 @@ const ViewTeam = ({ mutate, data: { loading, me }, match: { params: { teamId, ch
     />
     {currentChannel && [
       <Header key="channel-header" channelName={currentChannel.name} />,
-      <MessagesContainer key="channel-messages" channelId={currentChannel.id} />,
+      <MessagesContainer key="channel-group-messages" channelId={currentChannel.id} />,
       <TextContainer
         key="channel-messages"
         onSubmit={async (text) => {
