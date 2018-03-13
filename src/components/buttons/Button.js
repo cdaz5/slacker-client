@@ -6,10 +6,12 @@ const Button = styled.button`
 		(props.disabled ? '#f1f2f2' : props.primary ? '#4286f4' : props.invite ? '#2da664' : '#fff')};
 	color: ${props =>
 		(props.disabled ? '#b5b5b5' : props.primary ? '#fff' : props.invite ? '#fff' : '#4286f4')};
-	font-size: 1.5em;
-	padding: 0.25em 1em;
+  font-size: 1.5em;
+  font-weight: lighter;
+	padding: 0.5em 1em;
 	border: ${props => (props.disabled ? 'none' : props.invite ? 'none' : '1px solid #4286f4')};
-	border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
 	&:hover {
 		background: ${props =>
 			(props.disabled ? '' : props.primary ? '#fff' : props.invite ? '#2da664' : '#4286f4')};

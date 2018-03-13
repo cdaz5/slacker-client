@@ -24,7 +24,6 @@ const Teamsli = styled.li`
 	background-color: #676066;
 	color: #ffff;
 	margin: auto;
-	margin-bottom: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -42,13 +41,17 @@ export default ({ teams }) => (
     <TeamsUl>
       {teams.map(team => (
         <Link key={team.id} to={`/view-team/${team.id}`}>
-          <Teamsli>{team.letter}</Teamsli>
+          <Teamsli id={`team-${team.id}`}>{team.letter}</Teamsli>
+          <span style={{ display: 'block', marginBottom: '10px', color: '#cac4c9' }}>
+						⌘{team.id}
+          </span>
         </Link>
 			))}
       <Link key="add-team" to="/create-team">
         <Teamsli>
           <Icon name="add" style={{ height: '19px', margin: '0px' }} />
         </Teamsli>
+        <span style={{ display: 'block', marginBottom: '10px', color: '#cac4c9' }}>⌘z</span>
       </Link>
     </TeamsUl>
   </TeamsContainer>

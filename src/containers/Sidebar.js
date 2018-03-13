@@ -42,6 +42,7 @@ class Sidebar extends Component {
       channelName: '',
       public: true,
       email: '',
+      members: [],
       errors: {
         email: '',
       },
@@ -105,11 +106,13 @@ class Sidebar extends Component {
 	};
 
 	handleCreateChannelSubmit = async (teamId) => {
-		const { channelName } = this.state;
+		const { channelName, members } = this.state;
 		const response = await this.props.createChannelMutation({
 			variables: {
 				name: channelName,
-				teamId,
+        teamId,
+        public: this.state.public,
+        members,
 			},
 			optimisticResponse: {
 				createChannel: {
@@ -132,7 +135,8 @@ class Sidebar extends Component {
 				data.me.teams[teamIdx].channels.push(channel);
 				store.writeQuery({ query: meQuery, data });
 			},
-		});
+    });
+    console.log('response', response)
     this.handleCreateChannelModal();
     this.handleClearForm();
 	};
@@ -140,9 +144,14 @@ class Sidebar extends Component {
 	handleCreateChannelChange = (event, data) => {
 		if (data.name === 'public') {
 			return this.setState({
-				[data.name]: data.checked,
+				[data.name]: !data.checked,
 			});
-		}
+    }
+    if (data.placeholder === 'Search by name') {
+      return this.setState({
+				members: data.value,
+			});
+    }
 		return this.setState({
 			[event.target.name]: event.target.value,
 		});
@@ -164,9 +173,21 @@ class Sidebar extends Component {
   
 	render() {
 		const {
- teams, team, currentChannelId, userName,
+ teams, team, currentChannelId, userName, currentUserId,
 } = this.props;
-		const { showModal, inviteModal, errors, dmModal } = this.state;
+    const { showModal, inviteModal, errors, dmModal, members } = this.state;
+    
+    const regularChannels = []
+    const dmChannels = []
+
+    team.channels.forEach(channel => {
+      if (channel.dm) {
+        dmChannels.push(channel)
+      } else {
+        regularChannels.push(channel)
+
+      }
+    })
 
 		return [
   <DirectMessageModal
@@ -177,15 +198,18 @@ class Sidebar extends Component {
     handleDirectMessageSubmit={this.handleDirectMessageSubmit}
     teamId={team.id}
     values={this.state}
+    currentUserId={currentUserId}
   />,
   <CreateChannelModal
     key="create-channel-modal"
     isOpen={showModal}
+    members={members}
     handleCreateChannelModal={this.handleCreateChannelModal}
     handleCreateChannelChange={this.handleCreateChannelChange}
     handleCreateChannelSubmit={this.handleCreateChannelSubmit}
     teamId={team.id}
     values={this.state}
+    currentUserId={currentUserId}
   />,
   <InvitePeopleModal
     errors={errors}
@@ -206,8 +230,8 @@ class Sidebar extends Component {
     teamId={team.id}
     isOwner={team.admin}
     userName={userName}
-    channels={team.channels}
-    users={team.directMessageMembers}
+    channels={regularChannels}
+    dmChannels={dmChannels}
     handleCreateChannelModal={this.handleCreateChannelModal}
     handleInvitePeopleModal={this.handleInvitePeopleModal}
     handleDirectMessageModal={this.handleDirectMessageModal}
@@ -217,8 +241,8 @@ class Sidebar extends Component {
 }
 
 const createChannelMutation = gql`
-	mutation($teamId: Int!, $name: String!) {
-		createChannel(teamId: $teamId, name: $name) {
+	mutation($teamId: Int!, $name: String!, $public: Boolean, $members: [Int!]) {
+		createChannel(teamId: $teamId, name: $name, public: $public, members: $members) {
 			ok
 			channel {
 				id

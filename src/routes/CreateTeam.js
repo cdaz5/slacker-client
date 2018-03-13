@@ -17,7 +17,7 @@ class CreateTeam extends Component {
         name: '',
       },
 		});
-	}
+  }
 
 	handleChange = (event) => {
 		this[event.target.name] = event.target.value;

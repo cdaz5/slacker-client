@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
@@ -68,9 +68,9 @@ const InvitePeopleLink = styled.a`
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 export default ({
- userName, teamName, channels, users, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, isOwner, handleDirectMessageModal,
+ userName, teamName, channels, dmChannels, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, isOwner, handleDirectMessageModal,
 }) => (
-  <ChannelContainer>
+  console.log('channels', channels) || <ChannelContainer>
     <div>
       <TeamName>{teamName}</TeamName>
       <UserName>
@@ -81,24 +81,24 @@ export default ({
     <div>
       <SideBarUl>
         <SideBarLi header>
-					Channels {isOwner ? <Icon name="add circle" onClick={handleCreateChannelModal}/> : null } 
+					Channels {isOwner ? <Icon style={{ cursor: 'pointer'}} name="add circle" onClick={handleCreateChannelModal}/> : null } 
         </SideBarLi>
         {channels.map(channel => (
-          <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}><SideBarLi focus={currentChannelId === channel.id ? true : false} key={channel.id}>{`# ${channel.name}`}</SideBarLi></Link>
+          <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}><SideBarLi focus={currentChannelId === channel.id ? true : false} key={channel.id}>{channel.public ? `# ${channel.name}` : <Fragment><Icon style={{ width: 'auto'}} name="lock" />{`${ channel.name}`}</Fragment>}</SideBarLi></Link>
 				))}
       </SideBarUl>
     </div>
     <div>
       <SideBarUl>
-        <SideBarLi header>Direct Messages <Icon name="add circle" onClick={handleDirectMessageModal} /></SideBarLi>
+        <SideBarLi header>Direct Messages <Icon style={{ cursor: 'pointer'}} name="add circle" onClick={handleDirectMessageModal} /></SideBarLi>
         <SideBarLi key="slackbot">
           {/* eslint-disable-next-line */}
 					<Bubble /> {` slackbot`}
         </SideBarLi>
-        {users.map(user => (
-          <Link key={user.id} to={`/view-team/user/${teamId}/${user.id}`}>
+        {dmChannels.map(channel => (
+          <Link key={channel.id} to={`/view-team/user/${teamId}/${channel.id}`}>
             <SideBarLi>
-              <Bubble /> {` ${user.username}`}
+              <Bubble /> {` ${channel.name}`}
             </SideBarLi>
           </Link>
 				))}

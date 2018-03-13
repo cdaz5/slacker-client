@@ -12,8 +12,9 @@ const MultiSelect = ({
 	value,
 	handleChange,
 	placeholder,
+	currentUserId,
 }) =>
-	(console.log(teamId) || loading ? null : (
+	(console.log('getTeamMembers', getTeamMembers) || loading ? null : (
   <Dropdown
     placeholder={placeholder}
     onChange={handleChange}
@@ -22,7 +23,9 @@ const MultiSelect = ({
     multiple
     search
     selection
-    options={getTeamMembers.map(member => ({
+    size="huge"
+    style={{ fontSize: '20px', marginBottom: '10px' }}
+    options={getTeamMembers.filter(m => m.id !== currentUserId).map(member => ({
 				key: member.id,
 				value: member.id,
 				text: member.username,

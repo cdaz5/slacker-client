@@ -18,6 +18,8 @@ export const meQuery = gql`
 				channels {
 					id
 					name
+					dm
+					public
 				}
 			}
 		}

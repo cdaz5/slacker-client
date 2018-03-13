@@ -13,6 +13,16 @@ const TextContainer = styled.div`
 	text-align: center;
 `;
 
+const LabelWrapper = styled.span`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-right: 2px solid rgb(112, 114, 115);
+	&: hover {
+		background-color: #2da664;
+	}
+`;
+
 const Messaging = ({
 	placeholder,
 	values,
@@ -45,6 +55,7 @@ const Messaging = ({
         style={{
 					backgroundColor: 'transparent',
 					borderRight: '2px solid #707273',
+					cursor: 'pointer',
 				}}
       >
         <Uploader>
