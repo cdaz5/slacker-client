@@ -24,16 +24,17 @@ const SideBarUl = styled.ul`
 `;
 
 const SideBarLi = styled.li`
-  display: ${prop => (prop.header ? 'flex' : '')};
-  justify-content: ${prop => (prop.header ? 'space-between' : '')};
-  align-items: center;
+	display: ${prop => (prop.header ? 'flex' : '')};
+	justify-content: ${prop => (prop.header ? 'space-between' : '')};
+	align-items: center;
 	font-size: 16px;
 	font-weight: lighter;
+	background: ${prop => (prop.focus ? '#4C9689' : '#4e3a4c')};
 	color: ${prop => (prop.focus ? '#ffff' : '#cac4c9')};
-  padding: 5px 0;
+	padding: 5px 0;
 	&:hover {
-		background: ${prop => (prop.header ? '' : '#3e313c')};
-		color: ${prop => (prop.header || prop.focus ? '#ffff' : '#cac4c9')};
+		background: ${prop => (prop.header ? '' : prop.focus ? '#4C9689' : '#3e313c')};
+		color: ${prop => (prop.header ? '#ffff' : prop.focus ? '#ffff' : '#cac4c9')};
 	}
 `;
 
@@ -51,61 +52,107 @@ const Green = styled.span`
 	color: #38978d;
 `;
 
+const White = styled.span`
+	color: #fff;
+`;
+
 const InvitePeopleLink = styled.a`
-  padding: 5px 0;
-  font-size: 20px;
-  width: 100%;
-  color: #ffff;
-  font-weight: bold;
-  &:hover {
-    background: #3e313c;
-    color: #ffff;
+	padding: 5px 0;
+	font-size: 20px;
+	width: 100%;
+	color: #ffff;
+	font-weight: bold;
+	&:hover {
+		background: #3e313c;
+		color: #ffff;
 	}
 `;
 
-
 /* eslint-disable-next-line */
-const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
+const Bubble = ({ on, focus }) => (on && focus ? <White>●</White> : on ? <Green>●</Green> : '○');
 
 export default ({
- userName, teamName, channels, dmChannels, handleCreateChannelModal, teamId, currentChannelId, handleInvitePeopleModal, isOwner, handleDirectMessageModal,
-}) => (
-  console.log('channels', channels) || <ChannelContainer>
-    <div>
-      <TeamName>{teamName}</TeamName>
-      <UserName>
-        <Bubble />
-        {` ${userName}`}
-      </UserName>
-    </div>
-    <div>
-      <SideBarUl>
-        <SideBarLi header>
-					Channels {isOwner ? <Icon style={{ cursor: 'pointer'}} name="add circle" onClick={handleCreateChannelModal}/> : null } 
-        </SideBarLi>
-        {channels.map(channel => (
-          <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}><SideBarLi focus={currentChannelId === channel.id ? true : false} key={channel.id}>{channel.public ? `# ${channel.name}` : <Fragment><Icon style={{ width: 'auto'}} name="lock" />{`${ channel.name}`}</Fragment>}</SideBarLi></Link>
-				))}
-      </SideBarUl>
-    </div>
-    <div>
-      <SideBarUl>
-        <SideBarLi header>Direct Messages <Icon style={{ cursor: 'pointer'}} name="add circle" onClick={handleDirectMessageModal} /></SideBarLi>
-        <SideBarLi key="slackbot">
-          {/* eslint-disable-next-line */}
-					<Bubble /> {` slackbot`}
-        </SideBarLi>
-        {dmChannels.map(channel => (
-          <Link key={channel.id} to={`/view-team/user/${teamId}/${channel.id}`}>
-            <SideBarLi>
-              <Bubble /> {` ${channel.name}`}
-            </SideBarLi>
-          </Link>
-				))}
-      </SideBarUl>
-    </div>
-    <div style={{ display: 'flex' }}>
-      {isOwner ? <InvitePeopleLink href='#invite-people' onClick={handleInvitePeopleModal}>+ Invite People</InvitePeopleLink> : null }
-    </div>
-  </ChannelContainer>
-);
+	userName,
+	teamName,
+	channels,
+	dmChannels,
+	handleCreateChannelModal,
+	teamId,
+	currentChannelId,
+	handleInvitePeopleModal,
+	isOwner,
+	handleDirectMessageModal,
+}) =>
+	console.log('channels', channels) || (
+		<ChannelContainer>
+  <div>
+    <TeamName>{teamName}</TeamName>
+    <UserName>
+      <Bubble />
+      {` ${userName}`}
+    </UserName>
+  </div>
+  <div>
+    <SideBarUl>
+      <SideBarLi header>
+						Channels{' '}
+        {isOwner ? (
+          <Icon
+            style={{ cursor: 'pointer' }}
+            name="add circle"
+            onClick={handleCreateChannelModal}
+          />
+						) : null}
+      </SideBarLi>
+      {channels.map(channel => (
+        <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}>
+          <SideBarLi
+            focus={currentChannelId === channel.id}
+            key={channel.id}
+          >
+            {channel.public ? (
+									`# ${channel.name}`
+								) : (
+  <Fragment>
+    <Icon style={{ width: 'auto' }} name="lock" />
+    {`${channel.name}`}
+  </Fragment>
+								)}
+          </SideBarLi>
+        </Link>
+					))}
+    </SideBarUl>
+  </div>
+  <div>
+    <SideBarUl>
+      <SideBarLi header>
+						Direct Messages{' '}
+        <Icon
+          style={{ cursor: 'pointer' }}
+          name="add circle"
+          onClick={handleDirectMessageModal}
+        />
+      </SideBarLi>
+      <SideBarLi key="slackbot">
+        {/* eslint-disable-next-line */}
+						<Bubble on /> {` slackbot`}
+      </SideBarLi>
+      {dmChannels.map(channel => (
+        <Link key={channel.id} to={`/view-team/user/${teamId}/${channel.id}`}>
+          <SideBarLi focus={currentChannelId === channel.id}>
+            <Bubble on focus={currentChannelId === channel.id} />{' '}
+            {` ${channel.name}`}
+          </SideBarLi>
+        </Link>
+					))}
+    </SideBarUl>
+  </div>
+  <div style={{ display: 'flex' }}>
+    {isOwner ? (
+      <InvitePeopleLink href="#invite-people" onClick={handleInvitePeopleModal}>
+						+ Invite People
+      </InvitePeopleLink>
+				) : null}
+  </div>
+		</ChannelContainer>
+	);
