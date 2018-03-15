@@ -121,11 +121,14 @@ class Sidebar extends Component {
 					channel: {
 						__typename: 'Channel',
 						id: -1,
-						name: channelName,
+            name: channelName,
+            public: this.state.public,
+            dm: false
 					},
 				},
 			},
 			update: (store, { data: { createChannel } }) => {
+        console.log('in update store', createChannel)
 				const { ok, channel, errors } = createChannel;
 				if (!ok) {
 					return;
@@ -172,6 +175,7 @@ class Sidebar extends Component {
   }
   
 	render() {
+    console.log('props', this.props)
 		const {
  teams, team, currentChannelId, userName, currentUserId,
 } = this.props;
@@ -246,7 +250,9 @@ const createChannelMutation = gql`
 			ok
 			channel {
 				id
-				name
+        name
+        dm
+        public
 			}
 		}
 	}

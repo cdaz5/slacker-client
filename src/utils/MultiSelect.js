@@ -7,7 +7,7 @@ import { getTeamMembersQuery } from '../graphql/Team';
 // stateOptions = [ { key: 'AL', value: 'AL', text: 'Alabama' }, ...  ]
 
 const MultiSelect = ({
-	data: { loading, getTeamMembers },
+	data: { loading, getTeamMembers = [] },
 	teamId,
 	value,
 	handleChange,

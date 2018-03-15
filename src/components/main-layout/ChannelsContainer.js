@@ -88,7 +88,7 @@ export default ({
   <div>
     <TeamName>{teamName}</TeamName>
     <UserName>
-      <Bubble />
+      <Bubble on />
       {` ${userName}`}
     </UserName>
   </div>
@@ -138,7 +138,7 @@ export default ({
 						<Bubble on /> {` slackbot`}
       </SideBarLi>
       {dmChannels.map(channel => (
-        <Link key={channel.id} to={`/view-team/user/${teamId}/${channel.id}`}>
+        <Link key={channel.id} to={`/view-team/${teamId}/${channel.id}`}>
           <SideBarLi focus={currentChannelId === channel.id}>
             <Bubble on focus={currentChannelId === channel.id} />{' '}
             {` ${channel.name}`}

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Modal, Popup, Input } from 'semantic-ui-react';
+import { Modal, Popup } from 'semantic-ui-react';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
+import findIndex from 'lodash/findIndex';
+
 import Button from '../buttons/Button';
-import { getTeamMembersQuery } from '../../graphql/Team';
+import { meQuery } from '../../graphql/Team';
 import MultiSelect from '../../utils/MultiSelect';
 
 const DirectMessageModal = ({
@@ -44,8 +46,8 @@ const DirectMessageModal = ({
       <Button
         disabled={isSubmitting}
         onClick={(event) => {
-					handleDirectMessageModal();
 					resetForm();
+					handleDirectMessageModal();
 				}}
       >
 				Cancel
@@ -59,7 +61,16 @@ const DirectMessageModal = ({
 
 const getOrCreateChannelMutation = gql`
 	mutation($teamId: Int!, $members: [Int!]!) {
-		getOrCreateChannel(teamId: $teamId, members: $members)
+		getOrCreateChannel(teamId: $teamId, members: $members) {
+      id
+      name
+      channel {
+        id
+        name
+        dm
+        public
+      }
+    }
 	}
 `;
 
@@ -68,33 +79,33 @@ export default compose(
 	graphql(getOrCreateChannelMutation),
 	withFormik({
 		mapPropsToValues: () => ({ members: [] }),
-		handleSubmit: async ({ members }, { props: { onClose, teamId, mutate }, setSubmitting }) => {
+		handleSubmit: async ({ members }, { props: { history, handleDirectMessageModal, teamId, mutate }, resetForm }) => {
       //debugger
 			const response = await mutate({
 				variables: {
 					teamId,
 					members,
-				},
+        },
+        update: (store, { data: { getOrCreateChannel } }) => {
+          console.log('getOrCreateChannel', getOrCreateChannel)
+          const { id, name, channel } = getOrCreateChannel;
+
+          const data = store.readQuery({ query: meQuery });
+          console.log('before write data', data)
+          const teamIdx = findIndex(data.me.teams, ['id', teamId]);
+          const notInChannelList = data.me.teams[teamIdx].channels.every(c => c.id !== id);
+          
+          if (notInChannelList) {
+            data.me.teams[teamIdx].channels.push(channel);
+            console.log('after push data', data)
+            store.writeQuery({ query: meQuery, data });
+          }
+          history.push(`/view-team/${teamId}/${channel.id}`);
+        },
 			});
 			console.log(response);
-			setSubmitting(false);
-			// await mutate({
-			//   variables: {
-			//     teamId,
-			//     name: values.name,
-			//     public: values.public,
-			//     members: values.members,
-			//   },
-			//   optimisticResponse: {
-			//     createChannel: {
-			//       __typename: 'Mutation',
-			//       ok: true,
-			//       channel: {
-			//         __typename: 'Channel'
-			//       }
-			//     }
-			//   }
-			// })
+      resetForm();
+      handleDirectMessageModal();
 		},
 	}),
 )(DirectMessageModal);
