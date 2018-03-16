@@ -13,7 +13,7 @@ const ChannelContainer = styled.div`
 
 const TeamName = styled.h1`
 	color: #ffff;
-	font-size: 25px;
+	font-size: 20px;
 	margin: 0;
 `;
 
@@ -39,7 +39,7 @@ const SideBarLi = styled.li`
 `;
 
 const UserName = styled.div`
-	font-size: 20px;
+	font-size: 16px;
 	padding: 5px 0;
 	color: #cac4c9;
 	font-weight: lighter;

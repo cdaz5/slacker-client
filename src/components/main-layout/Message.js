@@ -2,6 +2,8 @@ import React from 'react';
 import { Comment } from 'semantic-ui-react';
 import styled from 'styled-components';
 
+import mask from '../../images/anonymous-mask.png';
+
 const Message = styled.div`
 	display: flex;
 	align-items: center;
@@ -20,7 +22,7 @@ export default ({ message }) => {
     <div style={{ alignSelf: 'flex-start' }}>
       <img
         alt="placeholder-avatar"
-        src="https://png.icons8.com/ios/50/000000/anonymous-mask.png"
+        src={mask}
       />
     </div>
     <div>

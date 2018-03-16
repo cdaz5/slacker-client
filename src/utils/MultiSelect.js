@@ -4,8 +4,6 @@ import { graphql } from 'react-apollo';
 
 import { getTeamMembersQuery } from '../graphql/Team';
 
-// stateOptions = [ { key: 'AL', value: 'AL', text: 'Alabama' }, ...  ]
-
 const MultiSelect = ({
 	data: { loading, getTeamMembers = [] },
 	teamId,

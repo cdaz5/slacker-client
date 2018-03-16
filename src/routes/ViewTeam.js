@@ -40,7 +40,7 @@ class ViewTeam extends Component {
 			data: { loading, me },
 			match: { params: { teamId, channelId } },
 		} = this.props;
-		if (loading) {
+		if (loading || !me) {
 			return null;
 		}
 
@@ -78,7 +78,7 @@ class ViewTeam extends Component {
       userName={username}
     />
     {currentChannel && [
-      <Header key="channel-header" channelName={currentChannel.name} />,
+      <Header key="channel-header" currentChannel={currentChannel} channelName={currentChannel.name} />,
       <MessagesContainer
         key="channel-group-messages"
         channelId={currentChannel.id}

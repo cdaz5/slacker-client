@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Popup } from 'semantic-ui-react';
+import { Modal, Popup, Icon } from 'semantic-ui-react';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
@@ -21,10 +21,24 @@ const DirectMessageModal = ({
 	resetForm,
 	setFieldValue,
 }) => (
-  <Modal open={isOpen}>
-    <Modal.Header>Select a Photo</Modal.Header>
+  <Modal size='small' open={isOpen}>
+    <div
+      style={{
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				padding: '10px',
+			}}
+    >
+      <div style={{ alignSelf: 'flex-end' }}>
+        <Icon style={{ cursor: 'pointer' }} onClick={handleDirectMessageModal} size="big" name="close" />
+      </div>
+      <div style={{ fontSize: '32px', fontWeight: 'bold' }}>
+				Direct Messages
+      </div>
+    </div>
     <Modal.Content>
-      <form onSubmit={event => event.preventDefault()}>
+      <form style={{ display: 'flex'}} onSubmit={event => event.preventDefault()}>
         <Popup
           inverted
           trigger={
@@ -40,22 +54,11 @@ const DirectMessageModal = ({
 					// open={!!errors.email}
           position="right center"
         />
+        <Button invite DM disabled={isSubmitting} onClick={handleSubmit}>
+          Go
+        </Button>
       </form>
     </Modal.Content>
-    <div>
-      <Button
-        disabled={isSubmitting}
-        onClick={(event) => {
-					resetForm();
-					handleDirectMessageModal();
-				}}
-      >
-				Cancel
-      </Button>
-      <Button disabled={isSubmitting} onClick={handleSubmit}>
-				Create
-      </Button>
-    </div>
   </Modal>
 );
 
@@ -94,7 +97,7 @@ export default compose(
           console.log('before write data', data)
           const teamIdx = findIndex(data.me.teams, ['id', teamId]);
           const notInChannelList = data.me.teams[teamIdx].channels.every(c => c.id !== id);
-          
+
           if (notInChannelList) {
             data.me.teams[teamIdx].channels.push(channel);
             console.log('after push data', data)

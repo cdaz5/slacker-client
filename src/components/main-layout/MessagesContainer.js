@@ -31,6 +31,10 @@ const newChannelMessageSubscription = gql`
 `;
 
 class MessagesContainer extends Component {
+	state = {
+		hasMoreItems: true,
+	};
+
 	componentWillMount() {
 		this.unsubscribe = this.subscribe(this.props.channelId);
 	}
@@ -63,21 +67,54 @@ class MessagesContainer extends Component {
 
 				return {
 					...prev,
-					messages: [...prev.messages, subscriptionData.data.newChannelMessage],
+					messages: [subscriptionData.data.newChannelMessage, ...prev.messages],
 				};
 			},
 		});
 
 	render() {
-		const { data: { loading, messages } } = this.props;
+		const { data: { loading, messages, fetchMore }, channelId } = this.props;
 		if (loading) {
 			return null;
 		}
 		return (
   <MessageContainer>
+    {/* {this.state.hasMoreItems && (
+    <button
+      onClick={() => {
+							fetchMore({
+								variables: {
+									channelId,
+									cursor: messages[messages.length - 1].created_at,
+								},
+								updateQuery: (previousResult, { fetchMoreResult }) => {
+									if (!fetchMoreResult) {
+										return previousResult;
+									}
+
+									if (fetchMoreResult.messages.length < 30) {
+										this.setState({ hasMoreItems: false });
+									}
+
+									return {
+										...previousResult,
+										messages: [
+											...previousResult.messages,
+											...fetchMoreResult.messages,
+										],
+									};
+								},
+							});
+						}}
+    >
+						Load more
+    </button>
+				)} */}
     <Uploader disableClick>
       <MessagesList>
-        {messages.map(message => <Message key={message.id} message={message} />)}
+        {[...messages]
+							.reverse()
+							.map(message => <Message key={message.id} message={message} />)}
       </MessagesList>
     </Uploader>
   </MessageContainer>
@@ -86,8 +123,8 @@ class MessagesContainer extends Component {
 }
 
 const messagesQuery = gql`
-	query($channelId: Int!) {
-		messages(channelId: $channelId) {
+	query($cursor: String, $channelId: Int!) {
+		messages(cursor: $cursor, channelId: $channelId) {
 			id
 			text
 			user {
@@ -99,10 +136,10 @@ const messagesQuery = gql`
 `;
 
 export default graphql(messagesQuery, {
-	variables: props => ({
-		channelId: props.channelId,
-	}),
-	options: {
+	options: props => ({
 		fetchPolicy: 'network-only',
-	},
+		variables: {
+			channelId: props.channelId,
+		},
+	}),
 })(MessagesContainer);

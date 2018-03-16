@@ -123,7 +123,7 @@ class Sidebar extends Component {
 						id: -1,
             name: channelName,
             public: this.state.public,
-            dm: false
+            dm: false,
 					},
 				},
 			},
