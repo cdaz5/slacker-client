@@ -34,7 +34,6 @@ class ViewTeam extends Component {
   };
 
 	render() {
-		console.log('view team props', this.props);
 		const {
 			mutate,
 			data: { loading, me },
@@ -50,7 +49,6 @@ class ViewTeam extends Component {
 			return <Redirect to="/create-team" />;
 		}
 
-		console.log('teams', teams);
 		const teamIdInteger = parseInt(teamId, 10);
 		const teamIdx = teamIdInteger ? findIndex(teams, ['id', teamIdInteger]) : 0;
 		const currentTeam = teamIdx === -1 ? teams[0] : teams[teamIdx];
@@ -62,7 +60,6 @@ class ViewTeam extends Component {
 		const currentChannel =
 			channelIdx === -1 ? currentTeam.channels[0] : currentTeam.channels[channelIdx];
 
-		console.log(currentTeam.directMessageMembers);
 
 		return (
   <MainContainer>

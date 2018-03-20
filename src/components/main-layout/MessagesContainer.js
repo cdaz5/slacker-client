@@ -47,10 +47,12 @@ class MessagesContainer extends Component {
 			this.unsubscribe = this.subscribe(channelId);
     }
     
-    if (this.scroller && this.scroller.scrollTop < 100 && this.props.data.messages && messages) {
+    if (this.scroller && this.scroller.scrollTop < 20 && this.props.data.messages && messages) {
       const currentHeight = this.scroller.scrollHeight;
       setTimeout(() => {
-        this.scroller.scrollTop = this.scroller.scrollHeight - currentHeight;
+        if (this.scroller) {
+          this.scroller.scrollTop = this.scroller.scrollHeight - currentHeight;
+        }
       }, 130);
     }
 	}

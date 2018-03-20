@@ -8,7 +8,8 @@ const ChannelContainer = styled.div`
 	grid-row: 1 / 4;
 	background-color: #4e3a4c;
 	color: #fff;
-	padding: 1em;
+  padding: 1em;
+  overflow-y: auto;
 `;
 
 const TeamName = styled.h1`
@@ -82,8 +83,7 @@ export default ({
 	handleInvitePeopleModal,
 	isOwner,
 	handleDirectMessageModal,
-}) =>
-	console.log('channels', channels) || (
+}) => (
 		<ChannelContainer>
   <div>
     <TeamName>{teamName}</TeamName>

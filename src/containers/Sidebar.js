@@ -77,7 +77,6 @@ class Sidebar extends Component {
 			},
     });
     this.handleClearErrors();
-		console.log(response);
 		const { ok, errors } = response.data.addTeamMember;
 		if (ok) {
 			this.handleInvitePeopleModal();
@@ -128,7 +127,6 @@ class Sidebar extends Component {
 				},
 			},
 			update: (store, { data: { createChannel } }) => {
-        console.log('in update store', createChannel)
 				const { ok, channel, errors } = createChannel;
 				if (!ok) {
 					return;
@@ -139,7 +137,6 @@ class Sidebar extends Component {
 				store.writeQuery({ query: meQuery, data });
 			},
     });
-    console.log('response', response)
     this.handleCreateChannelModal();
     this.handleClearForm();
 	};
@@ -167,15 +164,12 @@ class Sidebar extends Component {
   }
 
   handleDirectMessageSubmit = () => {
-    console.log('submit')
   }
 
   handleDirectMessageChange = () => {
-    console.log('change')
   }
   
 	render() {
-    console.log('props', this.props)
 		const {
  teams, team, currentChannelId, userName, currentUserId,
 } = this.props;
