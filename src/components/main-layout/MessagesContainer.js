@@ -39,13 +39,20 @@ class MessagesContainer extends Component {
 		this.unsubscribe = this.subscribe(this.props.channelId);
 	}
 
-	componentWillReceiveProps({ channelId }) {
+	componentWillReceiveProps({ data: { messages }, channelId }) {
 		if (this.props.channelId !== channelId) {
 			if (this.unsubscribe) {
 				this.unsubscribe();
 			}
 			this.unsubscribe = this.subscribe(channelId);
-		}
+    }
+    
+    if (this.scroller && this.scroller.scrollTop < 100 && this.props.data.messages && messages) {
+      const currentHeight = this.scroller.scrollHeight;
+      setTimeout(() => {
+        this.scroller.scrollTop = this.scroller.scrollHeight - currentHeight;
+      }, 130);
+    }
 	}
 
 	componentWillUnmount() {
@@ -72,49 +79,52 @@ class MessagesContainer extends Component {
 			},
 		});
 
+	handleScroll = () => {
+    const { data: { messages, fetchMore }, channelId } = this.props;
+		if (this.scroller && this.scroller.scrollTop < 100 && this.state.hasMoreItems && messages.length >= 30) {
+      fetchMore({
+        variables: {
+          channelId,
+          cursor: messages[messages.length - 1].created_at,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return previousResult;
+          }
+
+          if (fetchMoreResult.messages.length < 30) {
+            this.setState({ hasMoreItems: false });
+          }
+
+          return {
+            ...previousResult,
+            messages: [
+              ...previousResult.messages,
+              ...fetchMoreResult.messages,
+            ],
+          };
+        },
+      });
+		}
+	};
+
 	render() {
 		const { data: { loading, messages, fetchMore }, channelId } = this.props;
 		if (loading) {
 			return null;
 		}
 		return (
-  <MessageContainer>
-    {/* {this.state.hasMoreItems && (
-    <button
-      onClick={() => {
-							fetchMore({
-								variables: {
-									channelId,
-									cursor: messages[messages.length - 1].created_at,
-								},
-								updateQuery: (previousResult, { fetchMoreResult }) => {
-									if (!fetchMoreResult) {
-										return previousResult;
-									}
-
-									if (fetchMoreResult.messages.length < 30) {
-										this.setState({ hasMoreItems: false });
-									}
-
-									return {
-										...previousResult,
-										messages: [
-											...previousResult.messages,
-											...fetchMoreResult.messages,
-										],
-									};
-								},
-							});
-						}}
-    >
-						Load more
-    </button>
-				)} */}
+  <MessageContainer
+    onScroll={this.handleScroll}
+    innerRef={(scroller) => {
+					this.scroller = scroller;
+				}}
+  >
     <Uploader disableClick>
       <MessagesList>
         {[...messages]
 							.reverse()
-							.map(message => <Message key={message.id} message={message} />)}
+							.map(message => <Message message={message} />)}
       </MessagesList>
     </Uploader>
   </MessageContainer>
