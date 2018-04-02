@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 const Button = styled.button`
-	/* Adapt the colours based on primary prop */
+  /* Adapt the colours based on primary prop */
+  display: ${props => (props.flex ? 'flex' : '')};
 	background: ${props =>
 		(props.disabled ? '#f1f2f2' : props.primary ? '#4286f4' : props.invite ? '#2da664' : '#fff')};
 	color: ${props =>
@@ -12,7 +13,8 @@ const Button = styled.button`
 	font-weight: lighter;
 	padding: 0.5em 1em;
 	border: ${props => (props.disabled ? 'none' : props.invite ? 'none' : '1px solid #4286f4')};
-	border-radius: 3px;
+  border-radius: 3px;
+  align-items: center;
 	cursor: pointer;
 	&:hover {
 		background: ${props =>

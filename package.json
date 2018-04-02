@@ -10,6 +10,7 @@
 		"apollo-link-http": "^1.5.3",
 		"apollo-link-ws": "^1.0.7",
 		"apollo-utilities": "^1.0.9",
+		"better-react-spinkit": "^2.0.4",
 		"downshift": "^1.29.1",
 		"formik": "^0.11.11",
 		"graphql": "^0.13.1",
@@ -31,7 +32,7 @@
 		"subscriptions-transport-ws": "^0.9.6"
 	},
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "PORT=3001 react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject"

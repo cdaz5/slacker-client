@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import findIndex from 'lodash/findIndex';
-import jwtDecode from 'jwt-decode';
 
 import TeamsContainer from '../components/main-layout/TeamsContainer';
 import ChannelsContainer from '../components/main-layout/ChannelsContainer';
@@ -10,7 +9,6 @@ import CreateChannelModal from '../components/modals/CreateChannelModal';
 import InvitePeopleModal from '../components/modals/InvitePeopleModal';
 import DirectMessageModal from '../components/modals/DirectMessageModal';
 import { meQuery } from '../graphql/Team';
-import DirectMessage from '../components/main-layout/DirectMessage';
 
 class Sidebar extends Component {
 	state = {
@@ -127,7 +125,7 @@ class Sidebar extends Component {
 				},
 			},
 			update: (store, { data: { createChannel } }) => {
-				const { ok, channel, errors } = createChannel;
+				const { ok, channel } = createChannel;
 				if (!ok) {
 					return;
 				}

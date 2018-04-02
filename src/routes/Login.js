@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Loader, Message, Input, Popup } from 'semantic-ui-react';
-
+import { Input, Popup } from 'semantic-ui-react';
+import { FadingCircle } from 'better-react-spinkit';
 import { wsLink } from '../apollo';
+
 import Button from '../components/buttons/Button';
 
 class Login extends Component {
@@ -13,6 +14,7 @@ class Login extends Component {
 		super(props);
 
 		extendObservable(this, {
+      loading: false,
 			email: '',
       password: '',
       errors: {
@@ -27,13 +29,15 @@ class Login extends Component {
 	};
 
 	handleSubmit = async () => {
+    this.loading = true;
 		const { email, password } = this;
     const response = await this.props.mutate({
       variables: { email, password },
     });
-    this.handleClear()
+    this.handleClear();
     console.log('response', response)
     const { ok, refreshToken, token, errors } = response.data.login;
+    this.loading = false;
     if (ok) {
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
@@ -58,7 +62,7 @@ class Login extends Component {
 	};
 
 	render() {
-		const { email, password, errors } = this;
+		const { email, password, errors, loading } = this;
 		return (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
     <div
@@ -112,8 +116,8 @@ class Login extends Component {
         />
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
           <Button onClick={this.handleClear}>Clear</Button>
-          <Button primary onClick={this.handleSubmit}>
-            Submit
+          <Button flex primary onClick={this.handleSubmit}>
+        { loading ? <Fragment><span style={{ marginRight: '10px'}}>{'Submit '}</span><span><FadingCircle size={20} color='#42f4b0' /></span></Fragment> : 'Submit' }
           </Button>
         </div>
       </form>

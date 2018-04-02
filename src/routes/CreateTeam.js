@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Loader, Message, Input, Popup } from 'semantic-ui-react';
+import { FadingCircle } from 'better-react-spinkit';
 
 import Button from '../components/buttons/Button';
 
@@ -12,6 +13,7 @@ class CreateTeam extends Component {
 		super(props);
 
 		extendObservable(this, {
+      loading: false,
 			name: '',
       errors: {
         name: '',
@@ -24,6 +26,7 @@ class CreateTeam extends Component {
 	};
 
 	handleSubmit = async () => {
+    this.loading = true;
     const { name } = this;
     let response = null
     try {
@@ -50,6 +53,7 @@ class CreateTeam extends Component {
 	};
 
 	handleClear = () => {
+    this.loading = false,
 		this.name = '';
     this.errors = {
       name: ''
@@ -57,7 +61,7 @@ class CreateTeam extends Component {
 	};
 
 	render() {
-		const { name, errors } = this;
+		const { name, errors, loading } = this;
 		return (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
     <div
@@ -91,8 +95,8 @@ class CreateTeam extends Component {
         />
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
           <Button onClick={this.handleClear}>Clear</Button>
-          <Button primary onClick={this.handleSubmit}>
-            Submit
+          <Button flex primary onClick={this.handleSubmit}>
+          {loading ? <Fragment><span style={{ marginRight: '10px'}}>{'Submit '}</span><span><FadingCircle size={20} color='#42f4b0' /></span></Fragment> : 'Submit' }
           </Button>
         </div>
       </form>

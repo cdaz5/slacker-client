@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Loader, Message, Input, Popup } from 'semantic-ui-react';
+import { Input, Popup } from 'semantic-ui-react';
+import { FadingCircle } from 'better-react-spinkit';
 
 import Button from '../components/buttons/Button';
 
 class Register extends Component {
 	state = {
+    loading: false,
 		values: {
 			username: '',
 			email: '',
@@ -36,6 +38,7 @@ class Register extends Component {
 
 	handleClear = () => {
 		this.setState({
+      loading: false,
 			values: {
 				username: '',
 				email: '',
@@ -55,6 +58,10 @@ class Register extends Component {
 	};
 
 	handleSubmit = async () => {
+    this.setState({
+      ...this.state,
+      loading: true,
+    });
 		const response = await this.props.mutate({
 			variables: this.state.values,
 		});
@@ -77,7 +84,7 @@ class Register extends Component {
 	};
 
 	render() {
-		const { values, errors, touched } = this.state;
+		const { values, errors, touched, loading } = this.state;
 		return (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
     <div
@@ -145,8 +152,8 @@ class Register extends Component {
         />
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
           <Button onClick={this.handleClear}>Clear</Button>
-          <Button primary onClick={this.handleSubmit} disabled={!values.email || !values.password || !values.username}>
-            Submit
+          <Button flex primary onClick={this.handleSubmit} disabled={!values.email || !values.password || !values.username}>
+          {loading ? <Fragment><span style={{ marginRight: '10px'}}>{'Submit '}</span><span><FadingCircle size={20} color='#42f4b0' /></span></Fragment> : 'Submit' }
           </Button>
         </div>
       </form>

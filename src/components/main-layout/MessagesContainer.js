@@ -111,7 +111,7 @@ class MessagesContainer extends Component {
 	};
 
 	render() {
-		const { data: { loading, messages, fetchMore }, channelId } = this.props;
+		const { data: { loading, messages } } = this.props;
 		if (loading) {
 			return null;
 		}
