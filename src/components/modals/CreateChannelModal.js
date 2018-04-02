@@ -51,22 +51,14 @@ const CreateChannelModal = ({
             toggle
             style={{ padding: '15px', width: 'fit-content' }}
           />
-        <Popup
-          inverted
-          trigger={
-            <Input
-              onChange={handleCreateChannelChange}
-              value={values.channelName}
-              name="channelName"
-							// error={!!errors.email}
-              size="huge"
-              placeholder="Channel name..."
-              style={{ padding: '15px 0', width: '100%' }}
-            />
-					}
-					// content={errors.email}
-					// open={!!errors.email}
-          position="right center"
+        <Input
+          onChange={handleCreateChannelChange}
+          value={values.channelName}
+          name="channelName"
+          // error={!!errors.email}
+          size="huge"
+          placeholder="Channel name..."
+          style={{ padding: '15px 0', width: '100%' }}
         />
         {values.public ? null : (
           <Popup

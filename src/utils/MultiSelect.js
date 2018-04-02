@@ -12,7 +12,7 @@ const MultiSelect = ({
 	placeholder,
 	currentUserId,
 }) =>
-	(console.log('getTeamMembers', getTeamMembers) || loading ? null : (
+	(console.log('getTeamMembers', getTeamMembers, 'value', value) || loading ? null : (
   <Dropdown
     placeholder={placeholder}
     onChange={handleChange}

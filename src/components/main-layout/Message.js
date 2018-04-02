@@ -1,8 +1,10 @@
 import React from 'react';
 import { Comment } from 'semantic-ui-react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 import mask from '../../images/anonymous-mask.png';
+import PlaceholderAvatars from '../../utils/PlaceholderAvatars';
 
 const Message = styled.div`
 	display: flex;
@@ -16,21 +18,20 @@ const Avatar = styled.div`
 `;
 
 export default ({ message }) => {
+	const randomNumber = () => Math.floor(Math.random() * PlaceholderAvatars.length);
+
 	const pattern = new RegExp(/jpg|gif|png|gph/gi);
 	return (
   <Message>
     <div style={{ alignSelf: 'flex-start' }}>
-      <img
-        alt="placeholder-avatar"
-        src={mask}
-      />
+      <img alt="placeholder-avatar" src={PlaceholderAvatars[randomNumber()]} />
     </div>
-    <div>
+    <div style={{ marginLeft: '10px' }}>
       <div style={{ display: 'flex' }}>
         <Comment.Author style={{ paddingRight: '5px' }}>
           {message.user.username}
         </Comment.Author>
-        <Comment.Metadata>{message.created_at}</Comment.Metadata>
+        <Comment.Metadata>{moment(message.created_at).format(`ddd M/D h:mm a`)}</Comment.Metadata>
       </div>
       <Comment.Text>
         {pattern.test(message.text) ? (
@@ -39,7 +40,11 @@ export default ({ message }) => {
               {message.text}
             </a>
             <span>
-              <img style={{ maxHeight: '272px' }} alt={message.id} src={message.text} />
+              <img
+                style={{ maxHeight: '272px' }}
+                alt={message.id}
+                src={message.text}
+              />
             </span>
           </span>
 					) : (

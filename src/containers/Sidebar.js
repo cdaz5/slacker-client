@@ -17,7 +17,8 @@ class Sidebar extends Component {
     dmModal: false,
 		channelName: '',
 		public: true,
-		email: '',
+    email: '',
+    members: [],
 		errors: {
 			email: '',
 		},
@@ -75,7 +76,7 @@ class Sidebar extends Component {
 			},
     });
     this.handleClearErrors();
-		const { ok, errors } = response.data.addTeamMember;
+    const { ok, errors } = response.data.addTeamMember;
 		if (ok) {
 			this.handleInvitePeopleModal();
 		} else if (!ok) {
