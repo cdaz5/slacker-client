@@ -95,8 +95,25 @@ class CreateTeam extends Component {
         />
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
           <Button onClick={this.handleClear}>Clear</Button>
-          <Button flex primary onClick={this.handleSubmit}>
-          {loading ? <Fragment><span style={{ marginRight: '10px'}}>{'Submit '}</span><span><FadingCircle size={20} color='#42f4b0' /></span></Fragment> : 'Submit' }
+          <Button
+            flex
+            primary
+            disabled={!name}
+            onClick={this.handleSubmit}
+          >
+            {
+              loading ?
+                <Fragment>
+                  <span style={{ marginRight: '10px' }}>
+                    Submit
+                  </span>
+                  <span>
+                    <FadingCircle size={20} color='#42f4b0' />
+                  </span>
+                </Fragment>
+                :
+                'Submit'
+            }
           </Button>
         </div>
       </form>

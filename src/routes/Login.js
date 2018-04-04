@@ -5,8 +5,9 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Input, Popup } from 'semantic-ui-react';
 import { FadingCircle } from 'better-react-spinkit';
-import { wsLink } from '../apollo';
+import { Link } from 'react-router-dom';
 
+import { wsLink } from '../apollo';
 import Button from '../components/buttons/Button';
 
 class Login extends Component {
@@ -116,9 +117,29 @@ class Login extends Component {
         />
         <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
           <Button onClick={this.handleClear}>Clear</Button>
-          <Button flex primary onClick={this.handleSubmit}>
-        { loading ? <Fragment><span style={{ marginRight: '10px'}}>{'Submit '}</span><span><FadingCircle size={20} color='#42f4b0' /></span></Fragment> : 'Submit' }
+          <Button
+            flex
+            primary
+            disabled={!email || !password}
+            onClick={this.handleSubmit}
+          >
+            {
+              loading ?
+                <Fragment>
+                  <span style={{ marginRight: '10px'}}>
+                    Submit
+                  </span>
+                  <span>
+                    <FadingCircle size={20} color='#42f4b0' />
+                  </span>
+                </Fragment>
+                :
+                'Submit'
+              }
           </Button>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <span style={{ marginRight: '5px' }}>not a member?</span><Link to='/register'>Sign up</Link>
         </div>
       </form>
     </div>
